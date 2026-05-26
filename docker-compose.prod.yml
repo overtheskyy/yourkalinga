@@ -1,0 +1,16 @@
+services:
+  api:
+    build:
+      context: ./apps/api
+      dockerfile: Dockerfile
+      target: production
+    container_name: yourkalinga-api-prod
+    restart: always
+    env_file: .env
+    environment:
+      NODE_ENV: production
+    ports:
+      - '3001:3001'
+
+volumes:
+  postgres_data:
