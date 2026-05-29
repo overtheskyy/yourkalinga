@@ -1,19 +1,188 @@
 'use client';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { appointmentsApi } from '@/lib/api';
+import { appointmentsApi, doctorsApi } from '@/lib/api';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Calendar, Video, X, RefreshCw, Stethoscope, AlertCircle } from 'lucide-react';
+import { Calendar, Video, X, Stethoscope, Loader2, ChevronLeft, ChevronRight } from 'lucide-react';
 import { formatDate, formatTime, getStatusColor } from '@/lib/utils';
 import type { Appointment } from '@/types';
+
+const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+
+function getNext7Days(offset = 0) {
+  return Array.from({ length: 7 }, (_, i) => {
+    const d = new Date();
+    d.setDate(d.getDate() + i + 1 + offset);
+    return d;
+  });
+}
+
+function RescheduleModal({
+  appointment,
+  onClose,
+  onSuccess,
+}: {
+  appointment: Appointment;
+  onClose: () => void;
+  onSuccess: () => void;
+}) {
+  const [weekOffset, setWeekOffset] = useState(0);
+  const [selectedDate, setSelectedDate] = useState('');
+  const [slots, setSlots] = useState<string[]>([]);
+  const [slotsLoading, setSlotsLoading] = useState(false);
+  const [selectedSlot, setSelectedSlot] = useState('');
+  const [saving, setSaving] = useState(false);
+  const dates = getNext7Days(weekOffset * 7);
+
+  const handleDateSelect = async (date: Date) => {
+    const iso = date.toISOString().split('T')[0];
+    setSelectedDate(iso);
+    setSelectedSlot('');
+    setSlotsLoading(true);
+    try {
+      const res = await doctorsApi.getSlots(appointment.doctorId, iso);
+      setSlots(res.data);
+    } finally {
+      setSlotsLoading(false);
+    }
+  };
+
+  const handleConfirm = async () => {
+    if (!selectedDate || !selectedSlot) return;
+    setSaving(true);
+    try {
+      const slotDuration = 30;
+      const [h, m] = selectedSlot.split(':').map(Number);
+      const totalEnd = h * 60 + m + slotDuration;
+      const endTime = `${Math.floor(totalEnd / 60).toString().padStart(2, '0')}:${(totalEnd % 60).toString().padStart(2, '0')}`;
+      await appointmentsApi.reschedule(appointment.id, {
+        date: selectedDate,
+        startTime: selectedSlot,
+        endTime,
+      });
+      onSuccess();
+    } catch (err: any) {
+      alert(err.response?.data?.message || 'Reschedule failed');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
+      <div className="w-full max-w-md rounded-2xl bg-white shadow-xl">
+        <div className="flex items-center justify-between border-b border-gray-100 px-5 py-4">
+          <h2 className="font-semibold text-gray-900">Reschedule Appointment</h2>
+          <button onClick={onClose} className="rounded-full p-1 text-gray-400 hover:text-gray-600">
+            <X className="h-4 w-4" />
+          </button>
+        </div>
+
+        <div className="p-5 space-y-4">
+          <div className="rounded-lg bg-gray-50 px-4 py-3 text-sm text-gray-600">
+            <span className="font-medium">Dr. {appointment.doctor?.firstName} {appointment.doctor?.lastName}</span>
+            <span className="text-gray-400 mx-1">·</span>
+            Currently {formatDate(appointment.date)} at {formatTime(appointment.startTime)}
+          </div>
+
+          {/* Date picker */}
+          <div>
+            <div className="flex items-center justify-between mb-2">
+              <p className="text-sm font-medium text-gray-700">Select a new date</p>
+              <div className="flex gap-1">
+                <button
+                  onClick={() => { setWeekOffset((w) => Math.max(0, w - 1)); setSelectedDate(''); setSlots([]); }}
+                  disabled={weekOffset === 0}
+                  className="rounded-lg p-1 text-gray-400 hover:text-gray-600 disabled:opacity-30"
+                >
+                  <ChevronLeft className="h-4 w-4" />
+                </button>
+                <button
+                  onClick={() => { setWeekOffset((w) => w + 1); setSelectedDate(''); setSlots([]); }}
+                  className="rounded-lg p-1 text-gray-400 hover:text-gray-600"
+                >
+                  <ChevronRight className="h-4 w-4" />
+                </button>
+              </div>
+            </div>
+            <div className="flex gap-2 overflow-x-auto pb-1">
+              {dates.map((date) => {
+                const iso = date.toISOString().split('T')[0];
+                const dayName = DAYS[date.getDay() === 0 ? 6 : date.getDay() - 1];
+                return (
+                  <button
+                    key={iso}
+                    onClick={() => handleDateSelect(date)}
+                    className={`shrink-0 rounded-xl border-2 px-3 py-2 text-center transition-all ${
+                      selectedDate === iso
+                        ? 'border-teal-500 bg-teal-50 text-teal-700'
+                        : 'border-gray-100 hover:border-gray-200'
+                    }`}
+                  >
+                    <p className="text-xs text-gray-500">{dayName.slice(0, 3)}</p>
+                    <p className="text-lg font-bold">{date.getDate()}</p>
+                    <p className="text-[10px] text-gray-400">{date.toLocaleString('default', { month: 'short' })}</p>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Slots */}
+          {selectedDate && (
+            <div>
+              <p className="text-sm font-medium text-gray-700 mb-2">Available slots</p>
+              {slotsLoading ? (
+                <div className="grid grid-cols-4 gap-2">
+                  {[1, 2, 3, 4].map((i) => <Skeleton key={i} className="h-10" />)}
+                </div>
+              ) : slots.length === 0 ? (
+                <p className="text-sm text-gray-500 bg-gray-50 rounded-lg p-3 text-center">
+                  No available slots for this date
+                </p>
+              ) : (
+                <div className="grid grid-cols-4 gap-2">
+                  {slots.map((slot) => (
+                    <button
+                      key={slot}
+                      onClick={() => setSelectedSlot(slot)}
+                      className={`rounded-lg border py-2 text-sm transition-all ${
+                        selectedSlot === slot
+                          ? 'border-teal-500 bg-teal-50 text-teal-700 font-medium'
+                          : 'border-gray-100 hover:border-teal-200 text-gray-700'
+                      }`}
+                    >
+                      {formatTime(slot)}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+
+        <div className="flex justify-end gap-2 border-t border-gray-100 px-5 py-4">
+          <Button variant="ghost" onClick={onClose}>Cancel</Button>
+          <Button
+            onClick={handleConfirm}
+            disabled={!selectedDate || !selectedSlot || saving}
+          >
+            {saving ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Saving...</> : 'Confirm reschedule'}
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export default function PatientAppointmentsPage() {
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [loading, setLoading] = useState(true);
   const [cancelling, setCancelling] = useState<string | null>(null);
+  const [rescheduling, setRescheduling] = useState<Appointment | null>(null);
   const [tab, setTab] = useState<'upcoming' | 'past'>('upcoming');
 
   const fetchAppointments = () => {
@@ -43,6 +212,14 @@ export default function PatientAppointmentsPage() {
 
   return (
     <div className="space-y-5">
+      {rescheduling && (
+        <RescheduleModal
+          appointment={rescheduling}
+          onClose={() => setRescheduling(null)}
+          onSuccess={() => { setRescheduling(null); fetchAppointments(); }}
+        />
+      )}
+
       <div>
         <h1 className="text-2xl font-bold text-gray-900">My Appointments</h1>
         <p className="text-gray-500 text-sm">Manage your consultations</p>
@@ -115,6 +292,14 @@ export default function PatientAppointmentsPage() {
                         </Link>
                         <Button
                           size="sm"
+                          variant="outline"
+                          className="text-blue-600 border-blue-200 hover:bg-blue-50"
+                          onClick={() => setRescheduling(appt)}
+                        >
+                          Reschedule
+                        </Button>
+                        <Button
+                          size="sm"
                           variant="ghost"
                           className="text-red-500 hover:bg-red-50"
                           onClick={() => handleCancel(appt.id)}
@@ -125,7 +310,7 @@ export default function PatientAppointmentsPage() {
                       </div>
                     )}
                     {appt.status === 'COMPLETED' && (
-                      <Link href={`/patient/records`}>
+                      <Link href="/patient/records">
                         <Button size="sm" variant="ghost" className="text-blue-600">
                           View record
                         </Button>
