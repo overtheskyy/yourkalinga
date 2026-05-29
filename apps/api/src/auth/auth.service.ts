@@ -34,7 +34,7 @@ export class AuthService {
                 create: {
                   firstName: dto.firstName,
                   lastName: dto.lastName,
-                  specialization: 'General Practice',
+                  specialization: dto.specialization || 'General Practice',
                 },
               },
             }

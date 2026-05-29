@@ -7,7 +7,30 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { AlertCircle, Loader2, UserRound, Stethoscope } from 'lucide-react';
+import { AlertCircle, Loader2, UserRound, Stethoscope, ChevronDown } from 'lucide-react';
+
+const SPECIALIZATIONS = [
+  'General Practice',
+  'Internal Medicine',
+  'Pediatrics',
+  'Obstetrics & Gynecology',
+  'Cardiology',
+  'Dermatology',
+  'Orthopedics',
+  'Neurology',
+  'Psychiatry',
+  'Ophthalmology',
+  'ENT (Ear, Nose & Throat)',
+  'Gastroenterology',
+  'Pulmonology',
+  'Endocrinology',
+  'Nephrology',
+  'Oncology',
+  'Urology',
+  'Rheumatology',
+  'Emergency Medicine',
+  'Family Medicine',
+];
 import { cn } from '@/lib/utils';
 
 export default function RegisterPage() {
@@ -23,6 +46,7 @@ export default function RegisterPage() {
     password: '',
     firstName: '',
     lastName: '',
+    specialization: '',
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -99,6 +123,27 @@ export default function RegisterPage() {
               />
             </div>
           </div>
+          {role === 'DOCTOR' && (
+            <div className="space-y-1.5">
+              <Label htmlFor="specialization">Specialization</Label>
+              <div className="relative">
+                <select
+                  id="specialization"
+                  className="w-full appearance-none rounded-lg border border-gray-200 bg-white px-3 py-2 pr-8 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500"
+                  value={form.specialization}
+                  onChange={(e) => setForm({ ...form, specialization: e.target.value })}
+                  required
+                >
+                  <option value="" disabled>Select your specialization</option>
+                  {SPECIALIZATIONS.map((s) => (
+                    <option key={s} value={s}>{s}</option>
+                  ))}
+                </select>
+                <ChevronDown className="pointer-events-none absolute right-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+              </div>
+            </div>
+          )}
+
           <div className="space-y-1.5">
             <Label htmlFor="email">Email address</Label>
             <Input

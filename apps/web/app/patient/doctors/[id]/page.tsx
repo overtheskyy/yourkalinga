@@ -7,20 +7,18 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Star, CheckCircle, Calendar, Clock, ChevronLeft, Loader2, Languages } from 'lucide-react';
+import { Star, CheckCircle, Calendar, Clock, ChevronLeft, ChevronRight, Loader2, Languages } from 'lucide-react';
 import { formatDate, formatTime, getInitials } from '@/lib/utils';
 import type { DoctorProfile } from '@/types';
 
 const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
-function getNext7Days() {
-  const days = [];
-  for (let i = 0; i < 7; i++) {
+function getNext7Days(offset = 0) {
+  return Array.from({ length: 7 }, (_, i) => {
     const d = new Date();
-    d.setDate(d.getDate() + i + 1);
-    days.push(d);
-  }
-  return days;
+    d.setDate(d.getDate() + i + 1 + offset * 7);
+    return d;
+  });
 }
 
 export default function DoctorDetailPage() {
@@ -34,7 +32,8 @@ export default function DoctorDetailPage() {
   const [selectedSlot, setSelectedSlot] = useState('');
   const [reason, setReason] = useState('');
   const [booking, setBooking] = useState(false);
-  const dates = getNext7Days();
+  const [weekOffset, setWeekOffset] = useState(0);
+  const dates = getNext7Days(weekOffset);
 
   useEffect(() => {
     doctorsApi.getOne(id).then((res) => setDoctor(res.data)).finally(() => setLoading(false));
@@ -135,7 +134,24 @@ export default function DoctorDetailPage() {
         </CardHeader>
         <CardContent className="space-y-4">
           <div>
-            <p className="text-sm font-medium text-gray-700 mb-2">Select a date</p>
+            <div className="flex items-center justify-between mb-2">
+              <p className="text-sm font-medium text-gray-700">Select a date</p>
+              <div className="flex gap-1">
+                <button
+                  onClick={() => { setWeekOffset((w) => Math.max(0, w - 1)); setSelectedDate(''); setSlots([]); }}
+                  disabled={weekOffset === 0}
+                  className="rounded-lg p-1 text-gray-400 hover:text-gray-600 disabled:opacity-30"
+                >
+                  <ChevronLeft className="h-4 w-4" />
+                </button>
+                <button
+                  onClick={() => { setWeekOffset((w) => w + 1); setSelectedDate(''); setSlots([]); }}
+                  className="rounded-lg p-1 text-gray-400 hover:text-gray-600"
+                >
+                  <ChevronRight className="h-4 w-4" />
+                </button>
+              </div>
+            </div>
             <div className="flex gap-2 overflow-x-auto pb-1">
               {dates.map((date) => {
                 const iso = date.toISOString().split('T')[0];

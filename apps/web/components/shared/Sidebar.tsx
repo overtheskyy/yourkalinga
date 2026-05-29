@@ -25,6 +25,7 @@ const doctorLinks = [
   { href: '/doctor/appointments', icon: Calendar, label: 'Appointments' },
   { href: '/doctor/schedule', icon: Clock, label: 'My Schedule' },
   { href: '/doctor/patients', icon: Users, label: 'My Patients' },
+  { href: '/doctor/profile', icon: UserCircle, label: 'My Profile' },
 ];
 
 interface SidebarProps {
