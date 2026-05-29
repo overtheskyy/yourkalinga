@@ -128,6 +128,88 @@ describe('AuthService', () => {
     });
   });
 
+  // ─── register — DOCTOR role ───────────────────────────────────────────────────
+
+  describe('register — DOCTOR role', () => {
+    const doctorDto = {
+      email: 'doctor@test.com',
+      password: 'Password123!',
+      firstName: 'Maria',
+      lastName: 'Reyes',
+      role: RegisterRole.DOCTOR,
+      specialization: 'Cardiology',
+    };
+
+    const mockDoctorUser = {
+      id: 'user-2',
+      email: doctorDto.email,
+      role: 'DOCTOR',
+      passwordHash: 'hashed',
+      refreshToken: 'rt',
+      doctorProfile: { firstName: 'Maria', lastName: 'Reyes', specialization: 'Cardiology' },
+      patientProfile: null,
+    };
+
+    it('creates a DoctorProfile (not a PatientProfile) when role is DOCTOR', async () => {
+      mockPrisma.user.findUnique.mockResolvedValue(null);
+      mockPrisma.user.create.mockResolvedValue(mockDoctorUser);
+      mockPrisma.user.update.mockResolvedValue({});
+
+      await service.register(doctorDto);
+
+      const createCall = mockPrisma.user.create.mock.calls[0][0];
+      expect(createCall.data).toHaveProperty('doctorProfile');
+      expect(createCall.data).not.toHaveProperty('patientProfile');
+    });
+
+    it('uses the provided specialization when registering a doctor', async () => {
+      mockPrisma.user.findUnique.mockResolvedValue(null);
+      mockPrisma.user.create.mockResolvedValue(mockDoctorUser);
+      mockPrisma.user.update.mockResolvedValue({});
+
+      await service.register(doctorDto);
+
+      expect(mockPrisma.user.create).toHaveBeenCalledWith(
+        expect.objectContaining({
+          data: expect.objectContaining({
+            doctorProfile: {
+              create: expect.objectContaining({ specialization: 'Cardiology' }),
+            },
+          }),
+        }),
+      );
+    });
+
+    it('falls back to General Practice if specialization is not provided', async () => {
+      const { specialization, ...dtoWithout } = doctorDto;
+      mockPrisma.user.findUnique.mockResolvedValue(null);
+      mockPrisma.user.create.mockResolvedValue(mockDoctorUser);
+      mockPrisma.user.update.mockResolvedValue({});
+
+      await service.register(dtoWithout as any);
+
+      expect(mockPrisma.user.create).toHaveBeenCalledWith(
+        expect.objectContaining({
+          data: expect.objectContaining({
+            doctorProfile: {
+              create: expect.objectContaining({ specialization: 'General Practice' }),
+            },
+          }),
+        }),
+      );
+    });
+
+    it('strips passwordHash and refreshToken from returned doctor user', async () => {
+      mockPrisma.user.findUnique.mockResolvedValue(null);
+      mockPrisma.user.create.mockResolvedValue(mockDoctorUser);
+      mockPrisma.user.update.mockResolvedValue({});
+
+      const result = await service.register(doctorDto);
+      expect(result.user).not.toHaveProperty('passwordHash');
+      expect(result.user).not.toHaveProperty('refreshToken');
+    });
+  });
+
   // ─── login ───────────────────────────────────────────────────────────────────
 
   describe('login', () => {

@@ -195,6 +195,49 @@ describe('DoctorsService', () => {
     });
   });
 
+  // ─── update ───────────────────────────────────────────────────────────────────
+
+  describe('update — doctor updates their own profile', () => {
+    const userId = 'doctor-user-1';
+
+    it('throws NotFoundException if doctor profile not found', async () => {
+      mockPrisma.doctorProfile.findUnique.mockResolvedValue(null);
+      await expect(service.update(userId, { bio: 'Hello' })).rejects.toThrow(NotFoundException);
+    });
+
+    it('saves provided fields to the doctor profile', async () => {
+      mockPrisma.doctorProfile.findUnique.mockResolvedValue({ id: 'doc-1' });
+      mockPrisma.doctorProfile.update.mockResolvedValue({});
+
+      const dto = {
+        firstName: 'Maria',
+        lastName: 'Reyes',
+        bio: 'Experienced cardiologist.',
+        specialization: 'Cardiology',
+        yearsExperience: 10,
+        consultationFee: 800,
+        languages: ['English', 'Filipino'],
+      };
+
+      await service.update(userId, dto);
+
+      expect(mockPrisma.doctorProfile.update).toHaveBeenCalledWith(
+        expect.objectContaining({ data: dto }),
+      );
+    });
+
+    it('scopes the update to the authenticated doctor via userId', async () => {
+      mockPrisma.doctorProfile.findUnique.mockResolvedValue({ id: 'doc-1' });
+      mockPrisma.doctorProfile.update.mockResolvedValue({});
+
+      await service.update(userId, { bio: 'Updated bio' });
+
+      expect(mockPrisma.doctorProfile.update).toHaveBeenCalledWith(
+        expect.objectContaining({ where: { userId } }),
+      );
+    });
+  });
+
   // ─── findOne ──────────────────────────────────────────────────────────────────
 
   describe('findOne', () => {

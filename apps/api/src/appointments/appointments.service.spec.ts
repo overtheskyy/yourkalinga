@@ -221,6 +221,49 @@ describe('AppointmentsService', () => {
     });
   });
 
+  // ─── findDoctorAppointments ───────────────────────────────────────────────────
+
+  describe('findDoctorAppointments — doctor views their appointment history', () => {
+    it('throws NotFoundException if doctor profile not found', async () => {
+      mockPrisma.doctorProfile.findUnique.mockResolvedValue(null);
+      await expect(service.findDoctorAppointments('user-1')).rejects.toThrow(NotFoundException);
+    });
+
+    it('returns appointments ordered by date then startTime descending', async () => {
+      mockPrisma.doctorProfile.findUnique.mockResolvedValue({ id: 'doc-1' });
+      mockPrisma.appointment.findMany.mockResolvedValue([]);
+      await service.findDoctorAppointments('user-1');
+      expect(mockPrisma.appointment.findMany).toHaveBeenCalledWith(
+        expect.objectContaining({
+          orderBy: [{ date: 'desc' }, { startTime: 'desc' }],
+        }),
+      );
+    });
+
+    it('includes patient profile, consultation notes, and prescriptions', async () => {
+      mockPrisma.doctorProfile.findUnique.mockResolvedValue({ id: 'doc-1' });
+      mockPrisma.appointment.findMany.mockResolvedValue([]);
+      await service.findDoctorAppointments('user-1');
+      expect(mockPrisma.appointment.findMany).toHaveBeenCalledWith(
+        expect.objectContaining({
+          include: expect.objectContaining({
+            patient: true,
+            consultation: { include: { notes: true, prescriptions: true } },
+          }),
+        }),
+      );
+    });
+
+    it('scopes results to the authenticated doctor only', async () => {
+      mockPrisma.doctorProfile.findUnique.mockResolvedValue({ id: 'doc-1' });
+      mockPrisma.appointment.findMany.mockResolvedValue([]);
+      await service.findDoctorAppointments('user-1');
+      expect(mockPrisma.appointment.findMany).toHaveBeenCalledWith(
+        expect.objectContaining({ where: { doctorId: 'doc-1' } }),
+      );
+    });
+  });
+
   // ─── findPatientAppointments ──────────────────────────────────────────────────
 
   describe('findPatientAppointments — appointment history', () => {
