@@ -15,7 +15,7 @@ const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'
 function getNext7Days(offset = 0) {
   return Array.from({ length: 7 }, (_, i) => {
     const d = new Date();
-    d.setDate(d.getDate() + i + 1 + offset);
+    d.setDate(d.getDate() + i + offset);
     return d;
   });
 }

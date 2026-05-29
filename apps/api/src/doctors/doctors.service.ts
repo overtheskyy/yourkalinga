@@ -109,7 +109,19 @@ export class DoctorsService {
       ...booked.map((a) => a.startTime),
     ]);
 
-    return slots.filter((s) => !blockedTimes.has(s));
+    const available = slots.filter((s) => !blockedTimes.has(s));
+
+    const now = new Date();
+    const isToday = targetDate.toDateString() === now.toDateString();
+    if (isToday) {
+      const currentMinutes = now.getHours() * 60 + now.getMinutes();
+      return available.filter((s) => {
+        const [h, m] = s.split(':').map(Number);
+        return h * 60 + m > currentMinutes;
+      });
+    }
+
+    return available;
   }
 
   private generateSlots(start: string, end: string, duration: number): string[] {
