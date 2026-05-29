@@ -6,7 +6,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Calendar, Video, X, Stethoscope, Loader2, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Calendar, Video, X, Stethoscope, Loader2, ChevronLeft, ChevronRight, AlertTriangle } from 'lucide-react';
 import { formatDate, formatTime, getStatusColor } from '@/lib/utils';
 import type { Appointment } from '@/types';
 
@@ -203,7 +203,7 @@ export default function PatientAppointmentsPage() {
   };
 
   const upcoming = appointments.filter(
-    (a) => ['PENDING', 'CONFIRMED'].includes(a.status) && new Date(a.date) >= new Date(),
+    (a) => ['PENDING', 'CONFIRMED', 'RESCHEDULED'].includes(a.status) && new Date(a.date) >= new Date(),
   );
   const past = appointments.filter(
     (a) => a.status === 'COMPLETED' || a.status === 'CANCELLED' || new Date(a.date) < new Date(),
@@ -283,6 +283,33 @@ export default function PatientAppointmentsPage() {
                   </div>
                   <div className="flex flex-col items-end gap-2">
                     <Badge className={getStatusColor(appt.status)}>{appt.status}</Badge>
+                    {appt.status === 'RESCHEDULED' && (
+                      <div className="flex flex-col items-end gap-1.5">
+                        <div className="flex items-center gap-1 text-xs text-orange-600 bg-orange-50 rounded-lg px-2 py-1">
+                          <AlertTriangle className="h-3 w-3" />
+                          Schedule changed — please reschedule
+                        </div>
+                        <div className="flex gap-1.5">
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className="text-blue-600 border-blue-200 hover:bg-blue-50"
+                            onClick={() => setRescheduling(appt)}
+                          >
+                            Reschedule
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            className="text-red-500 hover:bg-red-50"
+                            onClick={() => handleCancel(appt.id)}
+                            disabled={cancelling === appt.id}
+                          >
+                            <X className="h-3.5 w-3.5" />
+                          </Button>
+                        </div>
+                      </div>
+                    )}
                     {['PENDING', 'CONFIRMED'].includes(appt.status) && (
                       <div className="flex gap-1.5">
                         <Link href={`/patient/consultation/${appt.id}`}>
