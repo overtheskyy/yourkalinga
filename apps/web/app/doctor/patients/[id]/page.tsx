@@ -54,7 +54,7 @@ export default function PatientDetailPage() {
               </div>
             </div>
           </div>
-          <div className="mt-5 grid grid-cols-2 gap-4 text-sm">
+          <div className="mt-5 grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4 text-sm">
             {patient.weight && <div><span className="text-gray-400">Weight: </span>{patient.weight} kg</div>}
             {patient.height && <div><span className="text-gray-400">Height: </span>{patient.height} cm</div>}
             {patient.contactNumber && <div><span className="text-gray-400">Contact: </span>{patient.contactNumber}</div>}

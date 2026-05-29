@@ -134,7 +134,7 @@ export default function DoctorProfilePage() {
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1.5">
                 First Name <span className="text-red-500">*</span>
@@ -191,7 +191,7 @@ export default function DoctorProfilePage() {
             {errors.specialization && <p className="mt-1 text-xs text-red-500">{errors.specialization}</p>}
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1.5">Years of Experience</label>
               <input

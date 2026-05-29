@@ -77,7 +77,7 @@ export function Navbar() {
 
   return (
     <header className="sticky top-0 z-40 border-b border-gray-100 bg-white/90 backdrop-blur-sm">
-      <div className="flex h-16 items-center justify-between px-6">
+      <div className="flex h-16 items-center justify-between px-4 md:px-6">
         <Link href="/" className="flex items-center gap-2">
           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-teal-600">
             <span className="text-sm font-bold text-white">YK</span>
@@ -103,7 +103,7 @@ export function Navbar() {
                 </button>
 
                 {open && (
-                  <div className="absolute right-0 top-12 w-80 rounded-2xl border border-gray-100 bg-white shadow-xl z-50">
+                  <div className="absolute right-0 top-12 w-[calc(100vw-2rem)] max-w-sm rounded-2xl border border-gray-100 bg-white shadow-xl z-50">
                     {/* Header */}
                     <div className="flex items-center justify-between border-b border-gray-100 px-4 py-3">
                       <div className="flex items-center gap-2">

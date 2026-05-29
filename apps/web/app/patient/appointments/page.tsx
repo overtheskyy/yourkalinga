@@ -136,7 +136,7 @@ function RescheduleModal({
             <div>
               <p className="text-sm font-medium text-gray-700 mb-2">Available slots</p>
               {slotsLoading ? (
-                <div className="grid grid-cols-4 gap-2">
+                <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
                   {[1, 2, 3, 4].map((i) => <Skeleton key={i} className="h-10" />)}
                 </div>
               ) : slots.length === 0 ? (
@@ -144,7 +144,7 @@ function RescheduleModal({
                   No available slots for this date
                 </p>
               ) : (
-                <div className="grid grid-cols-4 gap-2">
+                <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
                   {slots.map((slot) => (
                     <button
                       key={slot}
@@ -257,10 +257,10 @@ export default function PatientAppointmentsPage() {
         <div className="space-y-3">
           {displayed.map((appt) => (
             <Card key={appt.id} className="hover:shadow-sm transition-shadow">
-              <CardContent className="p-5">
-                <div className="flex items-start justify-between">
-                  <div className="flex gap-4">
-                    <div className="h-12 w-12 rounded-xl bg-teal-100 flex items-center justify-center shrink-0">
+              <CardContent className="p-4 md:p-5">
+                <div className="flex flex-col sm:flex-row sm:items-start gap-3">
+                  <div className="flex flex-1 gap-3 md:gap-4">
+                    <div className="h-11 w-11 md:h-12 md:w-12 rounded-xl bg-teal-100 flex items-center justify-center shrink-0">
                       <Stethoscope className="h-5 w-5 text-teal-600" />
                     </div>
                     <div>
@@ -268,7 +268,7 @@ export default function PatientAppointmentsPage() {
                         Dr. {appt.doctor?.firstName} {appt.doctor?.lastName}
                       </p>
                       <p className="text-sm text-gray-500">{appt.doctor?.specialization}</p>
-                      <div className="flex items-center gap-3 mt-1">
+                      <div className="flex flex-wrap items-center gap-2 md:gap-3 mt-1">
                         <span className="text-xs text-gray-500 flex items-center gap-1">
                           <Calendar className="h-3 w-3" /> {formatDate(appt.date)}
                         </span>
@@ -281,7 +281,7 @@ export default function PatientAppointmentsPage() {
                       )}
                     </div>
                   </div>
-                  <div className="flex flex-col items-end gap-2">
+                  <div className="flex flex-row sm:flex-col items-center sm:items-end gap-2 flex-wrap">
                     <Badge className={getStatusColor(appt.status)}>{appt.status}</Badge>
                     {appt.status === 'RESCHEDULED' && (
                       <div className="flex flex-col items-end gap-1.5">
@@ -348,6 +348,7 @@ export default function PatientAppointmentsPage() {
               </CardContent>
             </Card>
           ))}
+
         </div>
       )}
     </div>

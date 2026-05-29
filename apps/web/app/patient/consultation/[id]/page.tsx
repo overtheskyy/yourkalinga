@@ -94,9 +94,10 @@ export default function PatientConsultationPage() {
             <iframe
               src={`${jitsiUrl}#config.prejoinPageEnabled=false&config.startWithAudioMuted=false&config.startWithVideoMuted=false&userInfo.displayName=Patient`}
               width="100%"
-              height="540"
+              height="480"
               allow="camera; microphone; display-capture; fullscreen"
-              className="border-0"
+              className="border-0 min-h-[320px]"
+              style={{ height: 'clamp(320px, 60vh, 540px)' }}
             />
           </CardContent>
         </Card>

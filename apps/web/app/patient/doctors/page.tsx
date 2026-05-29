@@ -77,14 +77,14 @@ export default function DoctorsPage() {
       </div>
 
       {/* AI Symptom Checker */}
-      <div className="rounded-2xl bg-gradient-to-r from-teal-600 to-teal-500 p-5">
+      <div className="rounded-2xl bg-gradient-to-r from-teal-600 to-teal-500 p-4 md:p-5">
         <div className="flex items-center gap-2 text-white mb-3">
           <Brain className="h-5 w-5" />
           <span className="font-semibold">AI Doctor Recommendation</span>
         </div>
         <div className="flex gap-2">
           <Input
-            placeholder="Describe your symptoms (e.g., chest pain and shortness of breath)"
+            placeholder="Describe your symptoms..."
             value={symptoms}
             onChange={(e) => setSymptoms(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleAiRecommend()}

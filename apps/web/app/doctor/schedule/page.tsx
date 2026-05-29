@@ -87,12 +87,12 @@ export default function DoctorSchedulePage() {
                 const isActive = sched?.isActive || false;
 
                 return (
-                  <div key={day} className={`rounded-xl border-2 p-4 transition-all ${isActive ? 'border-teal-200 bg-teal-50/50' : 'border-gray-100'}`}>
-                    <div className="flex items-center justify-between">
+                  <div key={day} className={`rounded-xl border-2 p-3 md:p-4 transition-all ${isActive ? 'border-teal-200 bg-teal-50/50' : 'border-gray-100'}`}>
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
                       <div className="flex items-center gap-3">
                         <button
                           onClick={() => handleToggle(day)}
-                          className={`relative h-5 w-9 rounded-full transition-colors ${isActive ? 'bg-teal-500' : 'bg-gray-200'}`}
+                          className={`relative h-5 w-9 shrink-0 rounded-full transition-colors ${isActive ? 'bg-teal-500' : 'bg-gray-200'}`}
                           disabled={saving === day}
                         >
                           <span className={`absolute top-0.5 left-0.5 h-4 w-4 rounded-full bg-white shadow transition-transform ${isActive ? 'translate-x-4' : 'translate-x-0'}`} />
@@ -103,7 +103,7 @@ export default function DoctorSchedulePage() {
                       </div>
 
                       {isActive && sched && (
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-2 flex-wrap">
                           <input
                             type="time"
                             value={sched.startTime}

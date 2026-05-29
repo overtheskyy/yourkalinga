@@ -73,7 +73,7 @@ export default function DoctorConsultationPage() {
 
   return (
     <div className="space-y-5 max-w-4xl">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-wrap items-start justify-between gap-2">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Consultation Session</h1>
           <p className="text-gray-500 text-sm mt-0.5">{patientName} · {formatDate(appointment.date)} {formatTime(appointment.startTime)}</p>
@@ -116,7 +116,8 @@ export default function DoctorConsultationPage() {
                   width="100%"
                   height="400"
                   allow="camera; microphone; display-capture; fullscreen"
-                  className="border-0"
+                  className="border-0 min-h-[280px]"
+                  style={{ height: 'clamp(280px, 50vh, 400px)' }}
                 />
               </CardContent>
             </Card>
@@ -190,7 +191,7 @@ export default function DoctorConsultationPage() {
                       )}
                     </div>
                     <Input placeholder="Medication" value={rx.medication} onChange={(e) => { const p = [...prescriptions]; p[i].medication = e.target.value; setPrescriptions(p); }} disabled={isCompleted} className="text-xs h-8" />
-                    <div className="grid grid-cols-3 gap-1.5">
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5">
                       <Input placeholder="Dosage" value={rx.dosage} onChange={(e) => { const p = [...prescriptions]; p[i].dosage = e.target.value; setPrescriptions(p); }} disabled={isCompleted} className="text-xs h-8" />
                       <Input placeholder="Frequency" value={rx.frequency} onChange={(e) => { const p = [...prescriptions]; p[i].frequency = e.target.value; setPrescriptions(p); }} disabled={isCompleted} className="text-xs h-8" />
                       <Input placeholder="Duration" value={rx.duration} onChange={(e) => { const p = [...prescriptions]; p[i].duration = e.target.value; setPrescriptions(p); }} disabled={isCompleted} className="text-xs h-8" />

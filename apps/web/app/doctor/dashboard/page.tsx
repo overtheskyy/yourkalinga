@@ -52,7 +52,7 @@ export default function DoctorDashboard() {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
         {[
           { label: "Today's appointments", value: todayAppts.length, icon: Calendar, color: 'text-teal-600' },
           { label: 'Upcoming', value: upcoming.length, icon: Clock, color: 'text-blue-600' },
@@ -60,13 +60,13 @@ export default function DoctorDashboard() {
           { label: 'Total patients', value: uniquePatients, icon: Users, color: 'text-purple-600' },
         ].map(({ label, value, icon: Icon, color }) => (
           <Card key={label}>
-            <CardContent className="p-4 flex items-center gap-3">
-              <div className={`rounded-xl bg-gray-50 p-2.5 ${color}`}>
-                <Icon className="h-5 w-5" />
+            <CardContent className="p-3 md:p-4 flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3">
+              <div className={`rounded-xl bg-gray-50 p-2 md:p-2.5 ${color}`}>
+                <Icon className="h-4 w-4 md:h-5 md:w-5" />
               </div>
               <div>
-                <p className="text-2xl font-bold">{loading ? '—' : value}</p>
-                <p className="text-xs text-gray-500">{label}</p>
+                <p className="text-xl md:text-2xl font-bold">{loading ? '—' : value}</p>
+                <p className="text-xs text-gray-500 leading-tight">{label}</p>
               </div>
             </CardContent>
           </Card>
@@ -94,9 +94,9 @@ export default function DoctorDashboard() {
           ) : (
             <div className="space-y-3">
               {todayAppts.map((appt) => (
-                <div key={appt.id} className="flex items-center justify-between rounded-xl border border-gray-100 p-4 hover:border-teal-100 transition-colors">
+                <div key={appt.id} className="flex flex-col sm:flex-row sm:items-center justify-between rounded-xl border border-gray-100 p-3 md:p-4 gap-3 hover:border-teal-100 transition-colors">
                   <div className="flex items-center gap-3">
-                    <div className="h-10 w-10 rounded-full bg-teal-100 flex items-center justify-center">
+                    <div className="h-10 w-10 rounded-full bg-teal-100 flex items-center justify-center shrink-0">
                       <Users className="h-4 w-4 text-teal-600" />
                     </div>
                     <div>

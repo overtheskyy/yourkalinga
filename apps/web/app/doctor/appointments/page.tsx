@@ -59,17 +59,17 @@ export default function DoctorAppointmentsPage() {
         <div className="space-y-3">
           {displayed.map((appt) => (
             <Card key={appt.id}>
-              <CardContent className="p-5">
-                <div className="flex items-start justify-between">
-                  <div className="flex gap-4">
-                    <div className="h-12 w-12 rounded-xl bg-teal-100 flex items-center justify-center shrink-0">
+              <CardContent className="p-4 md:p-5">
+                <div className="flex flex-col sm:flex-row sm:items-start gap-3">
+                  <div className="flex flex-1 gap-3 md:gap-4">
+                    <div className="h-11 w-11 md:h-12 md:w-12 rounded-xl bg-teal-100 flex items-center justify-center shrink-0">
                       <Users className="h-5 w-5 text-teal-600" />
                     </div>
                     <div>
                       <p className="font-semibold text-gray-900">
                         {appt.patient?.firstName} {appt.patient?.lastName}
                       </p>
-                      <div className="flex items-center gap-3 mt-1">
+                      <div className="flex flex-wrap items-center gap-2 md:gap-3 mt-1">
                         <span className="text-xs text-gray-500 flex items-center gap-1">
                           <Calendar className="h-3 w-3" /> {formatDate(appt.date)}
                         </span>
@@ -82,7 +82,7 @@ export default function DoctorAppointmentsPage() {
                       )}
                     </div>
                   </div>
-                  <div className="flex flex-col items-end gap-2">
+                  <div className="flex flex-row sm:flex-col items-center sm:items-end gap-2 flex-wrap">
                     <Badge className={getStatusColor(appt.status)}>{appt.status}</Badge>
                     {['PENDING', 'CONFIRMED'].includes(appt.status) && (
                       <Link href={`/doctor/consultation/${appt.id}`}>

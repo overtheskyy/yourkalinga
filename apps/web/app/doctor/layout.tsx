@@ -28,7 +28,7 @@ export default function DoctorLayout({ children }: { children: React.ReactNode }
       <Navbar />
       <div className="flex">
         <Sidebar role="DOCTOR" />
-        <main className="flex-1 overflow-auto p-6">{children}</main>
+        <main className="flex-1 overflow-auto p-4 md:p-6">{children}</main>
       </div>
     </div>
   );

@@ -93,19 +93,19 @@ export default function DoctorDetailPage() {
 
       {/* Doctor info */}
       <Card>
-        <CardContent className="p-6">
-          <div className="flex gap-5">
-            <Avatar className="h-20 w-20 shrink-0">
+        <CardContent className="p-5 md:p-6">
+          <div className="flex flex-col sm:flex-row gap-4 sm:gap-5">
+            <Avatar className="h-16 w-16 sm:h-20 sm:w-20 shrink-0">
               {doctor.avatarUrl && <AvatarImage src={doctor.avatarUrl} />}
               <AvatarFallback className="text-xl">{getInitials(doctor.firstName, doctor.lastName)}</AvatarFallback>
             </Avatar>
             <div className="flex-1">
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 flex-wrap">
                 <h1 className="text-xl font-bold">Dr. {doctor.firstName} {doctor.lastName}</h1>
                 {doctor.isVerified && <CheckCircle className="h-5 w-5 text-teal-500" />}
               </div>
               <Badge className="mt-1">{doctor.specialization}</Badge>
-              <div className="mt-3 grid grid-cols-2 gap-2 text-sm text-gray-500">
+              <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm text-gray-500">
                 <div className="flex items-center gap-1.5">
                   <Star className="h-4 w-4 text-yellow-400 fill-yellow-400" />
                   {doctor.rating.toFixed(1)} ({doctor.reviewCount} reviews)
@@ -179,7 +179,7 @@ export default function DoctorDetailPage() {
             <div>
               <p className="text-sm font-medium text-gray-700 mb-2">Available slots</p>
               {slotsLoading ? (
-                <div className="grid grid-cols-4 gap-2">
+                <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
                   {[1,2,3,4].map((i) => <Skeleton key={i} className="h-10" />)}
                 </div>
               ) : slots.length === 0 ? (
@@ -187,7 +187,7 @@ export default function DoctorDetailPage() {
                   No available slots for this date
                 </p>
               ) : (
-                <div className="grid grid-cols-4 gap-2">
+                <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
                   {slots.map((slot) => (
                     <button
                       key={slot}
