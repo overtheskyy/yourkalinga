@@ -88,6 +88,15 @@ export const notificationsApi = {
   markAllRead: () => api.patch('/notifications/read-all'),
 };
 
+// Uploads
+export const uploadsApi = {
+  uploadAvatar: (file: File) => {
+    const form = new FormData();
+    form.append('file', file);
+    return api.post('/uploads/avatar', form, { headers: { 'Content-Type': 'multipart/form-data' } });
+  },
+};
+
 // AI
 export const aiApi = {
   recommend: (symptoms: string) => api.post('/ai/recommend', { symptoms }),

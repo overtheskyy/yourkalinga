@@ -6,9 +6,9 @@ import {
   Stethoscope,
   Calendar,
   FileText,
-  Video,
   Clock,
   Users,
+  UserCircle,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -17,6 +17,7 @@ const patientLinks = [
   { href: '/patient/doctors', icon: Stethoscope, label: 'Find Doctors' },
   { href: '/patient/appointments', icon: Calendar, label: 'Appointments' },
   { href: '/patient/records', icon: FileText, label: 'Medical Records' },
+  { href: '/patient/profile', icon: UserCircle, label: 'My Profile' },
 ];
 
 const doctorLinks = [

@@ -172,7 +172,10 @@ export function Navbar() {
                 )}
               </div>
 
-              <div className="flex items-center gap-2">
+              <Link
+                href={user?.role === 'DOCTOR' ? '/doctor/profile' : '/patient/profile'}
+                className="flex items-center gap-2 rounded-lg px-2 py-1 hover:bg-gray-100 transition-colors"
+              >
                 <Avatar className="h-8 w-8">
                   {profile?.avatarUrl && <AvatarImage src={profile.avatarUrl} />}
                   <AvatarFallback>
@@ -182,7 +185,7 @@ export function Navbar() {
                 <span className="text-sm font-medium text-gray-700 hidden sm:block">
                   {profile?.firstName} {profile?.lastName}
                 </span>
-              </div>
+              </Link>
 
               <button
                 onClick={handleLogout}
