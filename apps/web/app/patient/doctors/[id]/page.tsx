@@ -152,6 +152,7 @@ export default function DoctorDetailPage() {
                   >
                     <p className="text-xs text-gray-500">{dayName.slice(0, 3)}</p>
                     <p className="text-lg font-bold">{date.getDate()}</p>
+                    <p className="text-[10px] text-gray-400">{date.toLocaleString('default', { month: 'short' })}</p>
                   </button>
                 );
               })}
