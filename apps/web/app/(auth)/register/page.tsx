@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { Suspense, useState } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from '@/hooks/useAuth';
@@ -33,7 +33,7 @@ const SPECIALIZATIONS = [
 ];
 import { cn } from '@/lib/utils';
 
-export default function RegisterPage() {
+function RegisterForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { register } = useAuth();
@@ -184,5 +184,13 @@ export default function RegisterPage() {
         </p>
       </CardContent>
     </Card>
+  );
+}
+
+export default function RegisterPage() {
+  return (
+    <Suspense>
+      <RegisterForm />
+    </Suspense>
   );
 }
