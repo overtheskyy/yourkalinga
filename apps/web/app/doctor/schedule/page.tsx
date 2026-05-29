@@ -105,16 +105,18 @@ export default function DoctorSchedulePage() {
                       {isActive && sched && (
                         <div className="flex items-center gap-2 flex-wrap">
                           <input
+                            key={`${day}-start-${sched.startTime}`}
                             type="time"
-                            value={sched.startTime}
-                            onChange={(e) => handleTimeChange(day, 'startTime', e.target.value)}
+                            defaultValue={sched.startTime}
+                            onBlur={(e) => handleTimeChange(day, 'startTime', e.target.value)}
                             className="text-xs border border-gray-200 rounded-lg px-2 py-1 focus:outline-none focus:ring-1 focus:ring-teal-400"
                           />
                           <span className="text-gray-400 text-xs">–</span>
                           <input
+                            key={`${day}-end-${sched.endTime}`}
                             type="time"
-                            value={sched.endTime}
-                            onChange={(e) => handleTimeChange(day, 'endTime', e.target.value)}
+                            defaultValue={sched.endTime}
+                            onBlur={(e) => handleTimeChange(day, 'endTime', e.target.value)}
                             className="text-xs border border-gray-200 rounded-lg px-2 py-1 focus:outline-none focus:ring-1 focus:ring-teal-400"
                           />
                           {saving === day && <Loader2 className="h-3.5 w-3.5 animate-spin text-teal-500" />}
