@@ -64,7 +64,7 @@ export class AppointmentsService {
       appointmentId: appointment.id,
       title: 'Appointment Confirmed',
       body: `Your appointment with Dr. ${doctor.lastName} on ${dto.date} at ${dto.startTime} is confirmed.`,
-      type: 'BOOKING_CONFIRMED',
+      type: 'APPOINTMENT_BOOKED',
     });
 
     await this.notifications.create({
@@ -72,7 +72,7 @@ export class AppointmentsService {
       appointmentId: appointment.id,
       title: 'New Appointment',
       body: `${patient.firstName} ${patient.lastName} booked an appointment for ${dto.date} at ${dto.startTime}.`,
-      type: 'NEW_BOOKING',
+      type: 'APPOINTMENT_BOOKED',
     });
 
     return appointment;
@@ -153,7 +153,7 @@ export class AppointmentsService {
       appointmentId: id,
       title: 'Appointment Rescheduled',
       body: `Your appointment has been rescheduled to ${dto.date} at ${dto.startTime}.`,
-      type: 'RESCHEDULED',
+      type: 'APPOINTMENT_RESCHEDULED',
     });
 
     return updated;
@@ -185,7 +185,7 @@ export class AppointmentsService {
       appointmentId: id,
       title: 'Appointment Cancelled',
       body: `An appointment scheduled for ${appt.date.toDateString()} at ${appt.startTime} was cancelled.`,
-      type: 'CANCELLED',
+      type: 'APPOINTMENT_CANCELLED',
     });
 
     return updated;

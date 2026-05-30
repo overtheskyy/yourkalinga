@@ -202,11 +202,22 @@ export default function PatientAppointmentsPage() {
     }
   };
 
+  const isUpcoming = (a: Appointment) => {
+    const now = new Date();
+    const pad = (n: number) => String(n).padStart(2, '0');
+    const todayStr = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`;
+    const apptDateStr = a.date.slice(0, 10);
+    if (apptDateStr > todayStr) return true;
+    if (apptDateStr < todayStr) return false;
+    const [h, m] = a.startTime.split(':').map(Number);
+    return h * 60 + m > now.getHours() * 60 + now.getMinutes();
+  };
+
   const upcoming = appointments.filter(
-    (a) => ['PENDING', 'CONFIRMED', 'RESCHEDULED'].includes(a.status) && new Date(a.date) >= new Date(),
+    (a) => ['PENDING', 'CONFIRMED', 'RESCHEDULED'].includes(a.status) && isUpcoming(a),
   );
   const past = appointments.filter(
-    (a) => a.status === 'COMPLETED' || a.status === 'CANCELLED' || new Date(a.date) < new Date(),
+    (a) => a.status === 'COMPLETED' || a.status === 'CANCELLED' || !isUpcoming(a),
   );
   const displayed = tab === 'upcoming' ? upcoming : past;
 
