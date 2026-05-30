@@ -38,7 +38,6 @@ export class DoctorsService {
         user: { select: { email: true, id: true } },
         schedules: {
           where: { isActive: true },
-          include: { blockedSlots: true },
         },
         reviews: {
           include: {
