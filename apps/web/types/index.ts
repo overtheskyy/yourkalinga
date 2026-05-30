@@ -54,14 +54,6 @@ export interface DoctorSchedule {
   endTime: string;
   slotDuration: number;
   isActive: boolean;
-  blockedSlots?: BlockedSlot[];
-}
-
-export interface BlockedSlot {
-  id: string;
-  scheduleId: string;
-  date: string;
-  reason?: string;
 }
 
 export interface Appointment {

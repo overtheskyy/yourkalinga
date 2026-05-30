@@ -106,20 +106,7 @@ model DoctorSchedule {
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
 
-  blockedSlots BlockedSlot[]
-
   @@unique([doctorId, dayOfWeek])
-}
-
-model BlockedSlot {
-  id         String         @id @default(uuid())
-  scheduleId String
-  schedule   DoctorSchedule @relation(fields: [scheduleId], references: [id], onDelete: Cascade)
-  date       DateTime       @db.Date
-  reason     String?
-  createdAt  DateTime       @default(now())
-
-  @@unique([scheduleId, date])
 }
 
 model Appointment {

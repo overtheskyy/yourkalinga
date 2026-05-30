@@ -106,6 +106,4 @@ export const aiApi = {
 export const schedulesApi = {
   getMy: () => api.get('/schedules/my'),
   upsert: (data: any) => api.post('/schedules', data),
-  block: (data: any) => api.post('/schedules/block', data),
-  unblock: (slotId: string) => api.delete(`/schedules/block/${slotId}`),
 };

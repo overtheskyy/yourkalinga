@@ -187,7 +187,11 @@ async function main() {
               dayOfWeek: day,
             },
           },
-          update: {},
+          update: {
+            startTime: '09:00',
+            endTime: '17:00',
+            slotDuration: 30,
+          },
           create: {
             doctorId: user.doctorProfile.id,
             dayOfWeek: day,

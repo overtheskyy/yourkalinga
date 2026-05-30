@@ -84,13 +84,9 @@ export class DoctorsService {
 
     const schedule = await this.prisma.doctorSchedule.findUnique({
       where: { doctorId_dayOfWeek: { doctorId, dayOfWeek: dayOfWeek as any } },
-      include: { blockedSlots: { where: { date: targetDate } } },
     });
 
     if (!schedule || !schedule.isActive) return [];
-
-    // Entire day is blocked
-    if (schedule.blockedSlots.length > 0) return [];
 
     const slots = this.generateSlots(
       schedule.startTime,
