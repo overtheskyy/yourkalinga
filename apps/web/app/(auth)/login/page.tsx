@@ -76,29 +76,6 @@ export default function LoginPage() {
           </Button>
         </form>
 
-        <div className="mt-6 space-y-3">
-          <div className="relative">
-            <div className="absolute inset-0 flex items-center">
-              <span className="w-full border-t border-gray-100" />
-            </div>
-            <div className="relative flex justify-center text-xs">
-              <span className="bg-white px-2 text-gray-400">Demo accounts</span>
-            </div>
-          </div>
-          <div className="grid grid-cols-2 gap-2 text-xs text-gray-500">
-            <div className="rounded-lg bg-gray-50 p-2">
-              <p className="font-medium text-gray-700">Patient</p>
-              <p>patient@yourkalinga.com</p>
-              <p>Patient123!</p>
-            </div>
-            <div className="rounded-lg bg-gray-50 p-2">
-              <p className="font-medium text-gray-700">Doctor</p>
-              <p>dr.reyes@yourkalinga.com</p>
-              <p>Doctor123!</p>
-            </div>
-          </div>
-        </div>
-
         <p className="mt-6 text-center text-sm text-gray-500">
           Don&apos;t have an account?{' '}
           <Link href="/register" className="font-medium text-teal-600 hover:underline">
