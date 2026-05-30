@@ -1,5 +1,5 @@
 'use client';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/store/auth.store';
 import { Navbar } from '@/components/shared/Navbar';
@@ -9,9 +9,15 @@ import { useNotifications } from '@/hooks/useNotifications';
 export default function DoctorLayout({ children }: { children: React.ReactNode }) {
   const { user, isAuthenticated, token } = useAuthStore();
   const router = useRouter();
+  const [mounted, setMounted] = useState(false);
   useNotifications(token);
 
   useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!mounted) return;
     if (!isAuthenticated) {
       router.push('/login');
       return;
@@ -19,8 +25,9 @@ export default function DoctorLayout({ children }: { children: React.ReactNode }
     if (user?.role !== 'DOCTOR') {
       router.push('/patient/dashboard');
     }
-  }, [isAuthenticated, user]);
+  }, [mounted, isAuthenticated, user]);
 
+  if (!mounted) return null;
   if (!isAuthenticated || user?.role !== 'DOCTOR') return null;
 
   return (

@@ -19,18 +19,15 @@ export class SchedulesService {
         doctorId_dayOfWeek: { doctorId: doctor.id, dayOfWeek: dto.dayOfWeek },
       },
       update: {
-        startTime: dto.startTime,
-        endTime: dto.endTime,
-        slotDuration: dto.slotDuration,
         isActive: dto.isActive !== undefined ? dto.isActive : true,
       },
       create: {
         doctorId: doctor.id,
         dayOfWeek: dto.dayOfWeek,
-        startTime: dto.startTime,
-        endTime: dto.endTime,
-        slotDuration: dto.slotDuration || 30,
-        isActive: true,
+        startTime: '09:00',
+        endTime: '17:00',
+        slotDuration: 30,
+        isActive: dto.isActive !== undefined ? dto.isActive : true,
       },
     });
 
@@ -83,19 +80,21 @@ export class SchedulesService {
     const doctor = await this.prisma.doctorProfile.findUnique({ where: { userId } });
     if (!doctor) throw new NotFoundException('Doctor not found');
 
+    const targetDate = new Date(dto.date);
+    const dayNames = ['MONDAY','TUESDAY','WEDNESDAY','THURSDAY','FRIDAY','SATURDAY', 'SUNDAY'];
+    const dayOfWeek = dayNames[targetDate.getUTCDay()];
+
     const schedule = await this.prisma.doctorSchedule.findUnique({
-      where: { id: dto.scheduleId },
+      where: { doctorId_dayOfWeek: { doctorId: doctor.id, dayOfWeek: dayOfWeek as any } },
     });
-    if (!schedule || schedule.doctorId !== doctor.id) {
-      throw new ForbiddenException('Not your schedule');
+    if (!schedule) {
+      throw new NotFoundException(`No schedule found for ${dayOfWeek}. Enable this day in your weekly schedule first.`);
     }
 
     return this.prisma.blockedSlot.create({
       data: {
-        scheduleId: dto.scheduleId,
-        date: new Date(dto.date),
-        startTime: dto.startTime,
-        endTime: dto.endTime,
+        scheduleId: schedule.id,
+        date: targetDate,
         reason: dto.reason,
       },
     });

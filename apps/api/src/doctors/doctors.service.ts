@@ -79,7 +79,7 @@ export class DoctorsService {
   async getAvailableSlots(doctorId: string, date: string) {
     const targetDate = new Date(date);
     const dayOfWeek = ['SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY'][
-      targetDate.getDay()
+      targetDate.getUTCDay()
     ];
 
     const schedule = await this.prisma.doctorSchedule.findUnique({
@@ -88,6 +88,9 @@ export class DoctorsService {
     });
 
     if (!schedule || !schedule.isActive) return [];
+
+    // Entire day is blocked
+    if (schedule.blockedSlots.length > 0) return [];
 
     const slots = this.generateSlots(
       schedule.startTime,
@@ -104,12 +107,8 @@ export class DoctorsService {
       select: { startTime: true },
     });
 
-    const blockedTimes = new Set([
-      ...schedule.blockedSlots.map((b) => b.startTime),
-      ...booked.map((a) => a.startTime),
-    ]);
-
-    const available = slots.filter((s) => !blockedTimes.has(s));
+    const bookedTimes = new Set(booked.map((a) => a.startTime));
+    const available = slots.filter((s) => !bookedTimes.has(s));
 
     const now = new Date();
     const isToday = targetDate.toDateString() === now.toDateString();

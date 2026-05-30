@@ -21,6 +21,12 @@ function getNext7Days(offset = 0) {
   });
 }
 
+// Use local date parts so the displayed day and the sent ISO string always match.
+function toLocalISO(d: Date) {
+  const pad = (n: number) => String(n).padStart(2, '0');
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+}
+
 export default function DoctorDetailPage() {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
@@ -40,7 +46,7 @@ export default function DoctorDetailPage() {
   }, [id]);
 
   const handleDateSelect = async (date: Date) => {
-    const iso = date.toISOString().split('T')[0];
+    const iso = toLocalISO(date);
     setSelectedDate(iso);
     setSelectedSlot('');
     setSlotsLoading(true);
@@ -154,7 +160,7 @@ export default function DoctorDetailPage() {
             </div>
             <div className="flex gap-2 overflow-x-auto pb-1">
               {dates.map((date) => {
-                const iso = date.toISOString().split('T')[0];
+                const iso = toLocalISO(date);
                 const dayName = DAYS[date.getDay() === 0 ? 6 : date.getDay() - 1];
                 return (
                   <button

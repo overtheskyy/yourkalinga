@@ -116,10 +116,10 @@ model BlockedSlot {
   scheduleId String
   schedule   DoctorSchedule @relation(fields: [scheduleId], references: [id], onDelete: Cascade)
   date       DateTime       @db.Date
-  startTime  String
-  endTime    String
   reason     String?
   createdAt  DateTime       @default(now())
+
+  @@unique([scheduleId, date])
 }
 
 model Appointment {

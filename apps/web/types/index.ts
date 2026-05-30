@@ -61,8 +61,6 @@ export interface BlockedSlot {
   id: string;
   scheduleId: string;
   date: string;
-  startTime: string;
-  endTime: string;
   reason?: string;
 }
 
